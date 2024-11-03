@@ -8,6 +8,7 @@ import sklearn as sk
 from sklearn.preprocessing import OneHotEncoder, Normalizer
 from sklearn.model_selection import train_test_split
 class DataProcessor:
+    @staticmethod
     def load_data():
         #self.file_path = 'dataset/birds.csv'
         data = pd.read_csv('dataset/birds.csv')

@@ -12,17 +12,20 @@ class Adaline:
     def __init__(self, learning_rate, epochs, mse_threshold, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.bias = np.random.randn(1,1) if bias==True  else  None
+        self.bias = np.random.randn(1,60) if bias==True  else  None
         self.weights = np.random.randn(1,2)
         self.mse_threshold = mse_threshold
     
 
     def train(self,X,Y):
-        # WRITE HERE YOUR CODE
+        X = X.values.T
+        Y = Y.reshape(1,-1)
         # Dimentions
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        while(True):
-            if self.bias != None:
+        while(self.epochs):
+            self.epochs -= 1
+            net = 0
+            if self.bias is not None:
                 net = np.dot(self.weights,X) + self.bias
             else:
                 net = np.dot(self.weights,X) 
@@ -31,17 +34,16 @@ class Adaline:
             error = Y - y_pred
             mse = mean_squared_error(Y, y_pred)
             if mse <= self.mse_threshold:
-                break
-            self.weights = self.weights - self.learning_rate * error *  X
-            if self.bias != None:
-                self.bias = self.bias - self.learning_rate * error * X
-
-
+                continue
+            # (1,training samples).(traniing samples,2features)  
+            self.weights = self.weights - self.learning_rate * np.dot(error, X.T)
+            if self.bias is not None:
+                self.bias = self.bias - self.learning_rate * np.dot(error, X.T)
 
     def predict(self,X):
         # Write Here YOUR CODE
-        if self.bias != None:
-            net = np.dot(self.weights,X) + self.bias
+        if self.bias is not None:
+            net = np.dot(self.weights,X.values.T) + self.bias
         else:
-            net = np.dot(self.weights,X) 
+            net = np.dot(self.weights,X.values.T) 
         return net

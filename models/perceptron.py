@@ -12,38 +12,41 @@ class Perceptron:
     def __init__(self, learning_rate, epochs, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.bias = np.random.randn(1,1) if bias==True  else  None
-        self.weights = np.random.randn(1,2) 
+        self.bias = np.random.randn(1,2) if bias==True  else  None
+        self.weights = np.random.randn(1,2) * 0.01
     
     
     def train(self,X,Y):
-        # WRITE HERE YOUR CODE
-        # Dimentions
+        X = X.values.T
+        Y = Y.reshape(1,-1)
+        print("In Training Perceptron: ",X.shape,Y.shape)
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        while(True):
-            if self.bias != None:
+        while(self.epochs):
+            self.epochs -= 1
+            net = 0
+            if self.bias is not None:
                 net = np.dot(self.weights,X) + self.bias
             else:
                 net = np.dot(self.weights,X) 
-            y_pred = sgn_activation_function(net)
+            y_pred = self.sgn_activation_function(net)
             error = Y - y_pred
-            if error == np.zeros((1,X.shape[1])):
-                break
-            # (1,2)                   (1,training examples) * (2,training examples)
-            self.weights = self.weights - self.learning_rate * error *  X
-            if self.bias != None:
-                self.bias = self.bias - self.learning_rate * error * X
+            if np.all(error == 0):
+                continue
+            #                  (1,training samples).(traniing samples,2features)  
+            self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
+            if self.bias is not None:
+                self.bias = self.bias + self.learning_rate * np.dot(error, X.T)
 
-    def sgn_activation_function(net):
-        return 1 if net >= 0 else -1
+    def sgn_activation_function(self,net):
+        return [1 if n >= 0 else -1 for n in net[0]]
 
     def predict(self,X):
         # Write Here YOUR CODE
-        if self.bias != None:
-            net = np.dot(self.weights,X) + self.bias
+        if self.bias is not None:
+            net = np.dot(self.weights,X.values.T) + self.bias
         else:
-            net = np.dot(self.weights,X) 
-        y_pred = sgn_activation_function(net)
+            net = np.dot(self.weights,X.values.T) 
+        y_pred = self.sgn_activation_function(net)
         return y_pred
         
 

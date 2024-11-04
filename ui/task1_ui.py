@@ -12,7 +12,8 @@ class Task1UI(UI):
         # Data NEEDED
         self.dataProcessor = None
         self.selected_features = [] # store two selected features 
-        self.X_train,self.y_train,self.X_test,self.y_test=None,None,None,None
+        self.perceptron = None
+        self.adaline = None
 
         dataset_button = ttk.Button(self.root, text="Choose Dataset", command=self.on_click_choose_data)
         dataset_button.grid(row=0, column=0,padx=5 ,sticky="W")
@@ -53,6 +54,7 @@ class Task1UI(UI):
         mse_entry.grid(row=10, column=0, sticky="W")
 
         self.bias_var = tk.BooleanVar()
+        self.bias_var.set(False)
         bias_checkbox = ttk.Checkbutton(self.input_frame, text="Add Bias", variable=self.bias_var)
         bias_checkbox.grid(row=11, column=0, sticky="W")
 
@@ -65,10 +67,10 @@ class Task1UI(UI):
         perceptron_rb.grid(row=13, column=0, sticky="W")
         adaline_rb.grid(row=13, column=1, sticky="W")
 
-        visualize_button = ttk.Button(self.root, text="Train", command=self.on_click_train)
-        visualize_button.grid(row=14, column=0, padx=10, pady=10,sticky="W")
+        train_button = ttk.Button(self.root, text="Train", command=lambda:self.on_click_train())
+        train_button.grid(row=14, column=0, padx=10, pady=10,sticky="W")
 
-        view_boundary_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
+        view_boundary_button = ttk.Button(self.root, text="Predict", command=lambda:self.on_click_predict())
         view_boundary_button.grid(row=14, column=1,)
 
         visualize_button = ttk.Button(self.root, text="Visualize", command=self.on_click_visualize)
@@ -82,7 +84,7 @@ class Task1UI(UI):
     def on_click_choose_data(self):
         file=filedialog.askopenfilename(initialdir = os.path.expanduser( os.getcwd()),title = "Select Dataset",filetypes = (("Text files","*.csv"), ("all files","*.*")))
         self.dataProcessor = DataProcessor(file)
-        self.dataProcessor.load_data()
+      
         features =  self.dataProcessor.data.columns.drop(["bird category"])
         self.show_features(features)
   
@@ -93,7 +95,7 @@ class Task1UI(UI):
             self.selected_features.append(feature)  # Select feature if less than 2 are selected
         else:
             messagebox.showwarning("Limit Reached", "You can only select two features.")
-        print(self.selected_features)
+        print("Selected Features: ",self.selected_features)
 
     def show_features(self,features):
         idx=0
@@ -101,13 +103,12 @@ class Task1UI(UI):
             chk = tk.Checkbutton(self.input_frame, text=feature,command=lambda f=feature: self.on_select_feature(f))
             chk.grid(row=2, column=idx, sticky="W")
             idx+=1
-        print(self.selected_features)
 
     def on_click_processing(self):
-        if self.dataProcessor.data == None:
+        if  self.dataProcessor == None:
             messagebox.showwarning("NULL DATA", "Choose your dataset first")
             return
-        self.dataProcessor.process_data()
+        self.dataProcessor.process_data(self.class_var.get())
 
     def on_click_visualize(self):
         print()
@@ -119,18 +120,33 @@ class Task1UI(UI):
         #Visualizer.plot_.....
     
     def on_click_train(self):
-        self.X_train,self.y_train,self.X_test,self.y_test = self.dataProcessor.split_data()
+        if self.dataProcessor.X_train is None:
+            messagebox.showerror("Not Process Data", "Please Process the Data")
+            return
+        if self.learning_rate.get() == 0.0 or self.epochs.get() == 0:
+            messagebox.showerror("Empty Fields", "fill the learning_rate and epochs")
+            return
+
+        X_train, y_train = self.dataProcessor.X_train[self.selected_features], self.dataProcessor.y_train
+        
         if self.algorithm_var.get() == "Perceptron":
-            Perceptron().train(X_train,y_train)
+            self.perceptron = Perceptron(self.learning_rate.get(),self.epochs.get(),self.bias_var.get())
+            self.perceptron.train(X_train,y_train)
+        elif self.mse_threshold.get() !=0.0:
+            self.adaline = Adaline(self.learning_rate.get(),self.epochs.get(),self.mse_threshold.get(),self.bias_var.get())
+            self.adaline.train(X_train,y_train)
+
         else:
-            Adaline().train(X_train,y_train)
-        print()
+            messagebox.showerror("Empty Fields", "Fill MSE")
+    
     
     def on_click_predict(self):
+        X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
+
         if self.algorithm_var.get() == "Perceptron":
-            Perceptron().predict(X_test)
+            self.perceptron.predict(X_test)
         else:
-            Adaline().predict(X_test)
+            self.adaline.predict(X_test)
 
 
 

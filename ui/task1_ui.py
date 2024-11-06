@@ -85,11 +85,8 @@ class Task1UI(UI):
         view_boundary_button = ttk.Button(self.root, text="Predict", command=lambda: self.on_click_predict())
         view_boundary_button.grid(row=14, column=1, )
 
-        visualize_button = ttk.Button(self.root, text="Visualize", command=self.on_click_visualize)
-        visualize_button.grid(row=15, column=0, padx=10, pady=10, sticky="W")
-
         view_boundary_button = ttk.Button(self.root, text="View Decision Boundary", command=self.on_click_view_boundary)
-        view_boundary_button.grid(row=15, column=1, )
+        view_boundary_button.grid(row=15, column=0, )
 
         self.root.mainloop()
 
@@ -135,12 +132,12 @@ class Task1UI(UI):
         class_1 = X_train.loc[y_train == 1]
         # adjust bias
         def line(x1):
-            div = (self.adaline.weights[0][0] / self.adaline.weights[0][1])
-            x1[0] = div*x1[0]
-            x1[1] = div*x1[1]
-            return x1
-        print(f"weigths div {(self.adaline.weights[0][0] / self.adaline.weights[0][1])}")
-        print(f"x train {X_train.iloc[:,0]}")
+            if self.algorithm_var.get() == "Perceptron":
+                div = (self.perceptron.weights[0][0] / self.perceptron.weights[0][1])
+            else:
+                div = (self.adaline.weights[0][0] / self.adaline.weights[0][1])
+            return [div*x1[0], div*x1[1]]
+            
         # print(f"x min {X_train[:,0].min()}, x max {X_train[:,0].max()}")
         x1_values = [X_train.iloc[:,0].min(),X_train.iloc[:,0].max()]
         # print(f"x train {x1_values}")
@@ -150,14 +147,12 @@ class Task1UI(UI):
         fig, ax = plt.subplots()
         plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
         plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='red', label='Class 1')
-        print(f"self.adaline.weights[0] {self.adaline.weights}")
 
         plt.plot(x1_values, x2_values)
         canvas = FigureCanvasTkAgg(fig, master=new_window)
         canvas.draw()
         canvas.get_tk_widget().grid(row=4, column=5, padx=10, pady=10, sticky='nsew')
 
-        # Visualizer.plot_.....
 
     def on_click_train(self):
         if self.dataProcessor.X_train is None:

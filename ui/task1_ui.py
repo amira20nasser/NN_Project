@@ -38,18 +38,20 @@ class Task1UI(UI):
         alpha_label = ttk.Label(self.input_frame, text="Enter Learning Rate (eta):")
         alpha_label.grid(row=5, column=0, sticky="W")
         self.learning_rate = tk.DoubleVar()
+        self.learning_rate.set(0.015)
         alpha_entry = ttk.Entry(self.input_frame,textvariable=self.learning_rate)
         alpha_entry.grid(row=6, column=0, sticky="W")
-
         m_label = ttk.Label(self.input_frame, text="Enter Number of Epochs (m):")
         m_label.grid(row=7, column=0, sticky="W")
         self.epochs = tk.IntVar()
+        self.epochs.set(2)
         m_entry = ttk.Entry(self.input_frame,textvariable=self.epochs)
         m_entry.grid(row=8, column=0, sticky="W")
 
         mse_label = ttk.Label(self.input_frame, text="Enter MSE Threshold:")
         mse_label.grid(row=9, column=0, sticky="W")
         self.mse_threshold = tk.DoubleVar()
+        self.mse_threshold.set(0.5)
         mse_entry = ttk.Entry(self.input_frame,textvariable=self.mse_threshold)
         mse_entry.grid(row=10, column=0, sticky="W")
 
@@ -82,7 +84,8 @@ class Task1UI(UI):
         self.root.mainloop()
     
     def on_click_choose_data(self):
-        file=filedialog.askopenfilename(initialdir = os.path.expanduser( os.getcwd()),title = "Select Dataset",filetypes = (("Text files","*.csv"), ("all files","*.*")))
+        #file=filedialog.askopenfilename(initialdir = os.path.expanduser( os.getcwd()),title = "Select Dataset",filetypes = (("Text files","*.csv"), ("all files","*.*")))
+        file="dataset/birds.csv"
         self.dataProcessor = DataProcessor(file)
       
         features =  self.dataProcessor.data.columns.drop(["bird category"])

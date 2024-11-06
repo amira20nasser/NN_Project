@@ -14,8 +14,9 @@ class Adaline:
     def __init__(self, learning_rate, epochs, mse_threshold, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.bias = np.random.randn(1,1) if bias==True  else  None
-        self.weights = np.random.randn(1,2)
+
+        self.bias = np.random.randn() if bias == True else None
+        self.weights = np.random.randn(1, 2)
         self.mse_threshold = mse_threshold
 
     def train(self, X, Y):
@@ -49,5 +50,3 @@ class Adaline:
             net = np.dot(self.weights, X.values.T)
         return net
 
-    def line(self, x1):
-        return -(self.weights[0] / self.weights[1]) * x1

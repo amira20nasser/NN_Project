@@ -131,18 +131,21 @@ class Task1UI(UI):
         class_0 = X_train.loc[y_train == 0]
         class_1 = X_train.loc[y_train == 1]
         # adjust bias
-        def line(x1):
-            if self.algorithm_var.get() == "Perceptron":
-                div = (self.perceptron.weights[0][0] / self.perceptron.weights[0][1])
-            else:
-                div = (self.adaline.weights[0][0] / self.adaline.weights[0][1])
-            return [div*x1[0], div*x1[1]]
-            
+        if self.algorithm_var.get() == "Perceptron":
+            weights = self.perceptron.weights
+            bias=self.perceptron.bias
+        else:
+            weights = self.adaline.weights
+            bias = self.adaline.bias
+        weights=weights.reshape(2,1)
+        
         # print(f"x min {X_train[:,0].min()}, x max {X_train[:,0].max()}")
-        x1_values = [X_train.iloc[:,0].min(),X_train.iloc[:,0].max()]
         # print(f"x train {x1_values}")
-
-        x2_values = line(x1_values)
+        if bias is None:
+            bias=0
+        x1_values = np.linspace(min(X_train.iloc[:, 0]), max(X_train.iloc[:, 0]), 100)
+        x2_values = -(weights[0] * x1_values + bias) / weights[1]
+    
         new_window = tk.Toplevel(self.root)
         fig, ax = plt.subplots()
         plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
@@ -181,7 +184,6 @@ class Task1UI(UI):
         if self.algorithm_var.get() == "Perceptron":
            y_pred = self.perceptron.predict(X_test)
         else:
-<<<<<<< HEAD
            y_pred = self.adaline.predict(X_test)
            
         cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
@@ -195,6 +197,3 @@ class Task1UI(UI):
 
 
 
-=======
-            self.adaline.predict(X_test)
->>>>>>> 12262fe88327af1a04c284bf24262d65dfba4a91

@@ -5,7 +5,7 @@ TASK1: Data Preprocessing and *Splitting dataset*
 """
 import pandas as pd
 import sklearn as sk
-from sklearn.preprocessing import OneHotEncoder, Normalizer
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 class DataProcessor:
     def __init__(self, file_path):
@@ -49,7 +49,7 @@ class DataProcessor:
         self.X_train['gender']=self.X_train['gender'].fillna(gender_mode)
         self.X_train['gender']=[0 if x.lower() == "female" else 1 for x in self.X_train['gender']]
 
-        scaler= Normalizer()
+        scaler= MinMaxScaler()
         self.X_train[numeric_cols]=scaler.fit_transform(self.X_train[numeric_cols])
         # print("preprocessed train\n", self.X_train)
 

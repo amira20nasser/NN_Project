@@ -20,17 +20,23 @@ class DataProcessor:
         # y=pd.DataFrame(data.pop('bird category'))
         filtered_data = None
         if selected_classes == "A,B":
-            filtered_data = data[(data['bird category'] == 'A') | (data['bird category'] == 'B')]
-            filtered_data['bird category'] = [1 if x == "A" else 0 for x in filtered_data['bird category'] ]
+            data = data[data['bird category'].isin(['A','B'])]
+            data['bird category'] = data['bird category'].replace(['A'], 1)
+            data['bird category'] = data['bird category'].replace(['B'], -1)
+            # data['bird category'] = [1 if x == "A" else 0 for x in data['bird category'] ]
         if selected_classes == "A,C":
-            filtered_data = data[(data['bird category'] == 'C') | (data['bird category'] == 'A')]
-            filtered_data['bird category'] = [1 if x == "A" else 0 for x in filtered_data['bird category'] ]
+            data = data[data['bird category'].isin(['A','C'])]
+            data['bird category'] = data['bird category'].replace('A', 1)
+            data['bird category'] = data['bird category'].replace('C', -1)
+            # data['bird category'] = [1 if x == "A" else 0 for x in data['bird category'] ]
         if selected_classes == "B,C":
-            filtered_data = data[(data['bird category'] == 'B') | (data['bird category'] == 'C')]
-            filtered_data['bird category'] = [1 if x == "B" else 0 for x in filtered_data['bird category'] ]
+            data = data[data['bird category'].isin(['B','C'])]
+            data['bird category'] = data['bird category'].replace('B', 1)
+            data['bird category'] = data['bird category'].replace('C', -1)
+            # data['bird category'] = [1 if x == "B" else 0 for x in data['bird category'] ]
 
-        X = filtered_data.drop('bird category',axis=1)
-        y = filtered_data['bird category'].values  
+        X = data.drop('bird category',axis=1)
+        y = data['bird category'].values  
         # X=data
         numeric_cols=['body_mass', 'beak_length', 'beak_depth', 'fin_length']
         # print("data\n", data.head())

@@ -12,7 +12,7 @@ class Adaline:
     def __init__(self, learning_rate, epochs, mse_threshold, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.bias = np.random.randn(1,60) if bias==True  else  None
+        self.bias = np.random.randn(1,1) if bias==True  else  None
         self.weights = np.random.randn(1,2)
         self.mse_threshold = mse_threshold
     
@@ -36,9 +36,9 @@ class Adaline:
             if mse <= self.mse_threshold:
                 continue
             # (1,training samples).(traniing samples,2features)  
-            self.weights = self.weights - self.learning_rate * np.dot(error, X.T)
+            self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
             if self.bias is not None:
-                self.bias = self.bias - self.learning_rate * np.dot(error, X.T)
+                self.bias = self.bias + self.learning_rate * np.dot(error, X.T)
 
     def predict(self,X):
         # Write Here YOUR CODE

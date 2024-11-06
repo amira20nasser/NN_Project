@@ -12,7 +12,7 @@ class Perceptron:
     def __init__(self, learning_rate, epochs, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.bias = np.random.randn(1,2) if bias==True  else  None
+        self.bias = np.random.randn(1,1) if bias==True  else  None
         self.weights = np.random.randn(1,2) * 0.01
     
     
@@ -25,13 +25,15 @@ class Perceptron:
             self.epochs -= 1
             net = 0
             if self.bias is not None:
+                print("Bias")
+                print(self.bias)
                 net = np.dot(self.weights,X) + self.bias
             else:
                 net = np.dot(self.weights,X) 
             y_pred = self.sgn_activation_function(net)
             error = Y - y_pred
-            if np.all(error == 0):
-                continue
+            # if np.all(error == 0):
+            #     continue
             #                  (1,training samples).(traniing samples,2features)  
             self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
             if self.bias is not None:

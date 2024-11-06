@@ -6,6 +6,9 @@ from tkinter import filedialog
 import os 
 from models.adaline import *
 from models.perceptron import *
+from Evaluator import *
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 class Task1UI(UI):
     def __init__(self,taskTitle):
         super().__init__(taskTitle)
@@ -142,11 +145,19 @@ class Task1UI(UI):
     
     def on_click_predict(self):
         X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
-
+        y_pred = None
         if self.algorithm_var.get() == "Perceptron":
-            self.perceptron.predict(X_test)
+           y_pred = self.perceptron.predict(X_test)
         else:
-            self.adaline.predict(X_test)
+           y_pred = self.adaline.predict(X_test)
+           
+        cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        fig, ax = plt.subplots()
+        disp.plot(ax=ax)
+        plt.show()
+        acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
+        messagebox.showinfo("Evluation", f"Accuracy {acc}")    
 
 
 

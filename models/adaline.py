@@ -35,7 +35,9 @@ class Adaline:
 
             error = Y - y_pred
             mse = mean_squared_error(Y, y_pred)
+            # print(f"ADA current mse {mse}")
             if mse <= self.mse_threshold:
+                print("ADA Reach less than threshold")
                 break
             # (1,training samples).(traniing samples,2features)  
             self.weights = self.weights + self.learning_rate * np.dot(error, X.T)

@@ -125,21 +125,23 @@ class Task1UI(UI):
         self.dataProcessor.process_data(self.class_var.get())
 
     def on_click_visualize(self):
-        print()
         Visualizer.plot_scatter(self.dataProcessor.X_train[self.selected_features],self.dataProcessor.y_train)
 
     def on_click_view_boundary(self):
         X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
         class_0 = X_test.loc[y_test == -1]
         class_1 = X_test.loc[y_test == 1]
-
+        plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
+        plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='red', label='Class 1')
         # adjust bias
         if self.algorithm_var.get() == "Perceptron":
             weights = self.perceptron.weights
             bias=self.perceptron.bias
+            plt.title(f'eta:{self.perceptron.learning_rate}, epochs{self.perceptron.epochs}')
         else:
             weights = self.adaline.weights
             bias = self.adaline.bias
+            plt.title(f'mse_thresh-> {self.adaline.mse_threshold} eta:{self.adaline.learning_rate} {self.adaline.learning_rate}, epochs{self.adaline.epochs}')
         weights=weights.reshape(2,1)
         
         # print(f"x min {X_test[:,0].min()}, x max {X_test[:,0].max()}")
@@ -150,9 +152,9 @@ class Task1UI(UI):
         x2_values = -(weights[0] * x1_values + bias) / weights[1]
     
         # new_window = tk.Toplevel(self.root)
-        fig, ax = plt.subplots()
-        plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
-        plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='red', label='Class 1')
+        # fig, ax = plt.subplots()
+  
+        
         plt.xlabel(X_test.columns[0])
         plt.ylabel(X_test.columns[1])
         plt.legend(title='Class')
@@ -167,8 +169,8 @@ class Task1UI(UI):
         if self.dataProcessor.X_train is None:
             messagebox.showerror("Not Process Data", "Please Process the Data")
             return
-        if self.learning_rate.get() == 0.0 or self.epochs.get() == 0:
-            messagebox.showerror("Empty Fields", "fill the learning_rate and epochs")
+        if self.epochs.get() == 0:
+            messagebox.showerror("Empty Fields", "fill the epochs")
             return
 
         X_train, y_train = self.dataProcessor.X_train[self.selected_features], self.dataProcessor.y_train
@@ -176,12 +178,12 @@ class Task1UI(UI):
         if self.algorithm_var.get() == "Perceptron":
             self.perceptron = Perceptron(self.learning_rate.get(), self.epochs.get(), self.bias_var.get())
             self.perceptron.train(X_train, y_train)
-        elif self.mse_threshold.get() != 0.0:
+        else:
             self.adaline = Adaline(self.learning_rate.get(), self.epochs.get(), self.mse_threshold.get(),
                                    self.bias_var.get())
             self.adaline.train(X_train, y_train)
-        else:
-            messagebox.showerror("Empty Fields", "Fill MSE")
+        # else:
+        #     messagebox.showerror("Empty Fields", "Fill MSE")
             
 
 
@@ -202,7 +204,7 @@ class Task1UI(UI):
            y_pred_train = self.adaline.predict(X_train)
            weights = self.adaline.weights
 
-        print(f"view confusion shape y_act {y_test.shape} y_pred {y_pred.shape}")   
+        # print(f"view confusion shape y_act {y_test.shape} y_pred {y_pred.shape}")   
         cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred.T)
         disp = ConfusionMatrixDisplay(confusion_matrix=cm)
         fig, ax = plt.subplots()

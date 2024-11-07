@@ -25,8 +25,8 @@ class Perceptron:
         for _ in range(self.epochs):
             net = 0
             if self.bias is not None:
-                print("Bias")
-                print(self.bias)
+                # print("Bias")
+                # print(self.bias)
                 net = np.dot(self.weights,X) + self.bias
             else:
                 net = np.dot(self.weights,X) 

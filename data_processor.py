@@ -42,7 +42,7 @@ class DataProcessor:
         # print("data\n", data.head())
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.4,random_state=34)
 
-        print("train Shape: ", self.X_train.shape)
+        print("Process Data->Original train Shape: ", self.X_train.shape)
 
         #Preprocessing training data                              random_state=34)
         gender_mode=self.X_train['gender'].mode()[0]
@@ -53,7 +53,7 @@ class DataProcessor:
         self.X_train[numeric_cols]=scaler.fit_transform(self.X_train[numeric_cols])
         # print("preprocessed train\n", self.X_train)
 
-        print("test Shape: ", self.X_test.shape)
+        print("Process Data->Original test Shape: ", self.X_test.shape)
 
         self.X_test['gender']=self.X_test['gender'].fillna(gender_mode)
         self.X_test['gender']=[0 if x.lower() == "female" else 1 for x in self.X_test['gender']]

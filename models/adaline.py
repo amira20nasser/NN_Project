@@ -24,7 +24,7 @@ class Adaline:
         Y = Y.reshape(1, -1)
         # Dimentions
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        while (self.epochs):
+        for _ in range(self.epochs):
             self.epochs -= 1
             net = 0
             if self.bias is not None:
@@ -36,17 +36,16 @@ class Adaline:
             error = Y - y_pred
             mse = mean_squared_error(Y, y_pred)
             if mse <= self.mse_threshold:
-                continue
+                break
             # (1,training samples).(traniing samples,2features)  
             self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
             if self.bias is not None:
-                self.bias = self.bias + self.learning_rate * np.dot(error, X.T)
-
+                self.bias += self.learning_rate * np.sum(error)
     def predict(self, X):
         # Write Here YOUR CODE
         if self.bias is not None:
             net = np.dot(self.weights, X.values.T) + self.bias
         else:
             net = np.dot(self.weights, X.values.T)
-        return net
+        return np.where(net >= 0, 1, -1)
 

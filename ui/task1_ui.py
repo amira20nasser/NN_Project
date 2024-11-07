@@ -186,13 +186,13 @@ class Task1UI(UI):
         else:
            y_pred = self.adaline.predict(X_test)
            
-        cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-        fig, ax = plt.subplots()
-        disp.plot(ax=ax)
-        plt.show()
-        acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
-        messagebox.showinfo("Evluation", f"Accuracy {acc}")    
+        # cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
+        # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        # fig, ax = plt.subplots()
+        # disp.plot(ax=ax)
+        # plt.show()
+        # acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
+        # messagebox.showinfo("Evluation", f"Accuracy {acc}")    
 
 
 

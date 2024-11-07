@@ -22,8 +22,7 @@ class Perceptron:
         Y = Y.reshape(1,-1)
         print("In Training Perceptron: ",X.shape,Y.shape)
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        while(self.epochs):
-            self.epochs -= 1
+        for _ in range(self.epochs):
             net = 0
             if self.bias is not None:
                 print("Bias")
@@ -38,10 +37,10 @@ class Perceptron:
             #                  (1,training samples).(traniing samples,2features)  
             self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
             if self.bias is not None:
-                self.bias = self.bias + self.learning_rate * np.dot(error, X.T)
+                self.bias += self.learning_rate * np.sum(error)
 
     def sgn_activation_function(self,net):
-        return [1 if n >= 0 else -1 for n in net[0]]
+        return np.where(net >= 0, 1, -1)
 
     def predict(self,X):
         # Write Here YOUR CODE

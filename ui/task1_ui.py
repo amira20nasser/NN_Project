@@ -128,8 +128,9 @@ class Task1UI(UI):
 
     def on_click_view_boundary(self):
         X_train, y_train = self.dataProcessor.X_train[self.selected_features], self.dataProcessor.y_train
-        class_0 = X_train.loc[y_train == 0]
+        class_0 = X_train.loc[y_train == -1]
         class_1 = X_train.loc[y_train == 1]
+
         # adjust bias
         if self.algorithm_var.get() == "Perceptron":
             weights = self.perceptron.weights
@@ -186,13 +187,13 @@ class Task1UI(UI):
         else:
            y_pred = self.adaline.predict(X_test)
            
-        # cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
-        # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-        # fig, ax = plt.subplots()
-        # disp.plot(ax=ax)
-        # plt.show()
-        # acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
-        # messagebox.showinfo("Evluation", f"Accuracy {acc}")    
+        cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        fig, ax = plt.subplots()
+        disp.plot(ax=ax)
+        plt.show()
+        acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
+        messagebox.showinfo("Evluation", f"Accuracy {acc}")    
 
 
 

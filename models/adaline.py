@@ -15,8 +15,8 @@ class Adaline:
         self.learning_rate = learning_rate
         self.epochs = epochs
 
-        self.bias = np.random.randn() if bias == True else None
-        self.weights = np.random.randn(1, 2)
+        self.bias = np.random.randn(1,1) if bias == True else None
+        self.weights = np.random.randn(1,2) * 0.01
         self.mse_threshold = mse_threshold
 
     def train(self, X, Y):

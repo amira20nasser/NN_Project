@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+from visualizer import *
 from ui.ui import *
 import tkinter as tk
 from tkinter import messagebox, ttk
@@ -82,11 +82,14 @@ class Task1UI(UI):
         train_button = ttk.Button(self.root, text="Train", command=lambda: self.on_click_train())
         train_button.grid(row=14, column=0, padx=10, pady=10, sticky="W")
 
-        view_boundary_button = ttk.Button(self.root, text="Predict", command=lambda: self.on_click_predict())
-        view_boundary_button.grid(row=14, column=1, )
+        predict_button = ttk.Button(self.root, text="Predict", command=lambda: self.on_click_predict())
+        predict_button.grid(row=14, column=1, )
 
         view_boundary_button = ttk.Button(self.root, text="View Decision Boundary", command=self.on_click_view_boundary)
         view_boundary_button.grid(row=15, column=0, )
+        
+        visualize_btn = ttk.Button(self.root, text="Scatter Train Data", command=self.on_click_visualize)
+        visualize_btn.grid(row=16, column=0, )
 
         self.root.mainloop()
 
@@ -123,13 +126,12 @@ class Task1UI(UI):
 
     def on_click_visualize(self):
         print()
-        # call funtion visualizer
-        # Visualizer.plot_.....
+        Visualizer.plot_scatter(self.dataProcessor.X_train[self.selected_features],self.dataProcessor.y_train)
 
     def on_click_view_boundary(self):
-        X_train, y_train = self.dataProcessor.X_train[self.selected_features], self.dataProcessor.y_train
-        class_0 = X_train.loc[y_train == -1]
-        class_1 = X_train.loc[y_train == 1]
+        X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
+        class_0 = X_test.loc[y_test == -1]
+        class_1 = X_test.loc[y_test == 1]
 
         # adjust bias
         if self.algorithm_var.get() == "Perceptron":
@@ -140,22 +142,25 @@ class Task1UI(UI):
             bias = self.adaline.bias
         weights=weights.reshape(2,1)
         
-        # print(f"x min {X_train[:,0].min()}, x max {X_train[:,0].max()}")
+        # print(f"x min {X_test[:,0].min()}, x max {X_test[:,0].max()}")
         # print(f"x train {x1_values}")
         if bias is None:
             bias=0
-        x1_values = np.linspace(min(X_train.iloc[:, 0]), max(X_train.iloc[:, 0]), 100)
+        x1_values = np.linspace(min(X_test.iloc[:, 0]), max(X_test.iloc[:, 0]), 100)
         x2_values = -(weights[0] * x1_values + bias) / weights[1]
     
-        new_window = tk.Toplevel(self.root)
+        # new_window = tk.Toplevel(self.root)
         fig, ax = plt.subplots()
         plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
         plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='red', label='Class 1')
-
-        plt.plot(x1_values, x2_values)
-        canvas = FigureCanvasTkAgg(fig, master=new_window)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=4, column=5, padx=10, pady=10, sticky='nsew')
+        plt.xlabel(X_test.columns[0])
+        plt.ylabel(X_test.columns[1])
+        plt.legend(title='Class')
+        plt.plot(x1_values, x2_values.T)
+        plt.show()
+        # canvas = FigureCanvasTkAgg(fig, master=new_window)
+        # canvas.draw()
+        # canvas.get_tk_widget().grid(row=4, column=5, padx=10, pady=10, sticky='nsew')
 
 
     def on_click_train(self):
@@ -175,25 +180,37 @@ class Task1UI(UI):
             self.adaline = Adaline(self.learning_rate.get(), self.epochs.get(), self.mse_threshold.get(),
                                    self.bias_var.get())
             self.adaline.train(X_train, y_train)
-
         else:
             messagebox.showerror("Empty Fields", "Fill MSE")
+            
+
+
 
     def on_click_predict(self):
         X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
+        y_train = self.dataProcessor.y_train
+        X_train = self.dataProcessor.X_train[self.selected_features]
         y_pred = None
+        y_pred_train = None
+        weights = None
         if self.algorithm_var.get() == "Perceptron":
            y_pred = self.perceptron.predict(X_test)
+           y_pred_train = self.perceptron.predict(X_train)
+           weights = self.perceptron.weights
         else:
            y_pred = self.adaline.predict(X_test)
-           
-        cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred)
+           y_pred_train = self.adaline.predict(X_train)
+           weights = self.adaline.weights
+
+        print(f"view confusion shape y_act {y_test.shape} y_pred {y_pred.shape}")   
+        cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred.T)
         disp = ConfusionMatrixDisplay(confusion_matrix=cm)
         fig, ax = plt.subplots()
         disp.plot(ax=ax)
         plt.show()
-        acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
-        messagebox.showinfo("Evluation", f"Accuracy {acc}")    
+        acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred.T)
+        acc_train = Evaluator.overall_accuracy(y_actual=y_train,y_pred= y_pred_train.T)    
+        messagebox.showinfo("Evluation", f"Train Accuracy {acc_train} \nTest Accuracy {acc}\n with weights {weights}")    
 
 
 

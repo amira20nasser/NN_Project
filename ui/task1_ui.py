@@ -189,9 +189,10 @@ class Task1UI(UI):
 
 
     def on_click_predict(self):
-        X_test, y_test = self.dataProcessor.X_test[self.selected_features], self.dataProcessor.y_test
-        y_train = self.dataProcessor.y_train
+        y_train = self.dataProcessor.y_train.flatten()
         X_train = self.dataProcessor.X_train[self.selected_features]
+        X_test= self.dataProcessor.X_test[self.selected_features]
+        y_test=self.dataProcessor.y_test.flatten()
         y_pred = None
         y_pred_train = None
         weights = None

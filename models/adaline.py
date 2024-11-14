@@ -15,39 +15,42 @@ class Adaline:
         self.learning_rate = learning_rate
         self.epochs = epochs
 
-        self.bias = np.random.randn(1,1) if bias == True else None
-        self.weights = np.random.randn(1,2) * 0.01
+
+        self.bias = 0.1* np.random.randn() if bias == True else None
+        self.weights = 0.1* np.random.randn(1, 2)
         self.mse_threshold = mse_threshold
 
     def train(self, X, Y):
-        X = X.values.T
-        Y = Y.reshape(1, -1)
+        X = X.values
+        Y=Y.flatten()
+        y_pred=np.empty(len(Y))
+
         # Dimentions
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        for _ in range(self.epochs):
-            self.epochs -= 1
-            net = 0
-            if self.bias is not None:
-                net = np.dot(self.weights, X) + self.bias
-            else:
-                net = np.dot(self.weights, X)
-            y_pred = net
+        for i in range(self.epochs):
+            for j in range(len(X)):
+                if self.bias is not None:
+                    net = np.dot(self.weights, X[j].T) + self.bias
+                else:
+                    net = np.dot(self.weights, X[j].T)
+                y_pred[j] = net
+                error = Y[j] - y_pred[j]
+                print(error)
+                # (1,training samples).(traniing samples,2features)  
+                self.weights = self.weights + self.learning_rate * error * X[j]
+                if self.bias is not None:
+                    self.bias += self.learning_rate * error
 
-            error = Y - y_pred
             mse = mean_squared_error(Y, y_pred)
             # print(f"ADA current mse {mse}")
             if mse <= self.mse_threshold:
                 print("ADA Reach less than threshold")
                 break
-            # (1,training samples).(traniing samples,2features)  
-            self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
-            if self.bias is not None:
-                self.bias += self.learning_rate * np.sum(error)
     def predict(self, X):
         # Write Here YOUR CODE
         if self.bias is not None:
             net = np.dot(self.weights, X.values.T) + self.bias
         else:
             net = np.dot(self.weights, X.values.T)
-        return np.where(net >= 0, 1, -1)
+        return np.where(net >= 0, 1, -1).reshape(len(X))
 

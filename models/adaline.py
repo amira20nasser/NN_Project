@@ -35,7 +35,6 @@ class Adaline:
                     net = np.dot(self.weights, X[j].T)
                 y_pred[j] = net
                 error = Y[j] - y_pred[j]
-                print(error)
                 # (1,training samples).(traniing samples,2features)  
                 self.weights = self.weights + self.learning_rate * error * X[j]
                 if self.bias is not None:

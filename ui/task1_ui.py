@@ -20,77 +20,76 @@ class Task1UI(UI):
         self.selected_features = []  # store two selected features
         self.perceptron = None
         self.adaline = None
-
+        
         dataset_button = ttk.Button(self.root, text="Choose Dataset", command=self.on_click_choose_data)
-        dataset_button.grid(row=0, column=0, padx=5, sticky="W")
+        dataset_button.grid(row=0, column=0, columnspan=2, sticky="EW", padx=5, pady=5)
 
-        dataset_button = ttk.Button(self.root, text="Processing", command=self.on_click_processing)
-        dataset_button.grid(row=0, column=1, sticky="W")
+        processing_button = ttk.Button(self.root, text="Processing", command=self.on_click_processing)
+        processing_button.grid(row=0, column=2, columnspan=2, sticky="EW", padx=5, pady=5)
 
-        self.input_frame = ttk.LabelFrame(self.root, text="Hyper-Parameters", padding=(10, 10))
-        self.input_frame.grid(row=1, column=0, padx=10, pady=10)
+        self.input_frame = ttk.LabelFrame(self.root, text="Hyper-Parameters")
+        self.input_frame.grid(row=1, column=0, columnspan=4, sticky="EW", padx=10, pady=10)
 
         feature_label = ttk.Label(self.input_frame, text="Select Two Features:")
-        feature_label.grid(row=1, column=0, sticky="W")
+        feature_label.grid(row=0, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         class_label = ttk.Label(self.input_frame, text="Select Two Classes:")
-        class_label.grid(row=3, column=0, sticky="W")
+        class_label.grid(row=1, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         self.class_var = tk.StringVar(value="A,B")
         class_options = ["A,B", "A,C", "B,C"]
         class_menu = ttk.OptionMenu(self.input_frame, self.class_var, *class_options)
-        class_menu.grid(row=4, column=0, sticky="W", columnspan=3)
+        class_menu.grid(row=1, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
         alpha_label = ttk.Label(self.input_frame, text="Enter Learning Rate (eta):")
-        alpha_label.grid(row=5, column=0, sticky="W")
+        alpha_label.grid(row=2, column=0, columnspan=2, sticky="W", padx=5, pady=2)
+
         self.learning_rate = tk.DoubleVar()
+        self.learning_rate.set(0.01)
+        alpha_entry = ttk.Entry(self.input_frame, textvariable=self.learning_rate)
+        alpha_entry.grid(row=2, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
-        self.learning_rate.set(0.015)
-        alpha_entry = ttk.Entry(self.input_frame,textvariable=self.learning_rate)
-        alpha_entry.grid(row=6, column=0, sticky="W")
         m_label = ttk.Label(self.input_frame, text="Enter Number of Epochs (m):")
-        m_label.grid(row=7, column=0, sticky="W")
-        self.epochs = tk.IntVar()
+        m_label.grid(row=3, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
-        self.epochs.set(2)
-        m_entry = ttk.Entry(self.input_frame,textvariable=self.epochs)
-        m_entry.grid(row=8, column=0, sticky="W")
+        self.epochs = tk.IntVar()
+        self.epochs.set(10)
+        m_entry = ttk.Entry(self.input_frame, textvariable=self.epochs)
+        m_entry.grid(row=3, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
         mse_label = ttk.Label(self.input_frame, text="Enter MSE Threshold:")
-        mse_label.grid(row=9, column=0, sticky="W")
-        self.mse_threshold = tk.DoubleVar()
+        mse_label.grid(row=4, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
+        self.mse_threshold = tk.DoubleVar()
         self.mse_threshold.set(0.5)
-        mse_entry = ttk.Entry(self.input_frame,textvariable=self.mse_threshold)
-        mse_entry.grid(row=10, column=0, sticky="W")
+        mse_entry = ttk.Entry(self.input_frame, textvariable=self.mse_threshold)
+        mse_entry.grid(row=4, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
         self.bias_var = tk.BooleanVar()
         self.bias_var.set(False)
         bias_checkbox = ttk.Checkbutton(self.input_frame, text="Add Bias", variable=self.bias_var)
-        bias_checkbox.grid(row=11, column=0, sticky="W")
+        bias_checkbox.grid(row=5, column=0, columnspan=4, sticky="W", padx=5, pady=2)
 
         algorithm_label = ttk.Label(self.input_frame, text="Choose Algorithm:")
-        algorithm_label.grid(row=12, column=0, sticky="W")
+        algorithm_label.grid(row=6, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         self.algorithm_var = tk.StringVar(value="Perceptron")
-        perceptron_rb = ttk.Radiobutton(self.input_frame, text="Perceptron", variable=self.algorithm_var,
-                                        value="Perceptron")
+        perceptron_rb = ttk.Radiobutton(self.input_frame, text="Perceptron", variable=self.algorithm_var, value="Perceptron")
         adaline_rb = ttk.Radiobutton(self.input_frame, text="Adaline", variable=self.algorithm_var, value="Adaline")
-        perceptron_rb.grid(row=13, column=0, sticky="W")
-        adaline_rb.grid(row=13, column=1, sticky="W")
+        perceptron_rb.grid(row=7, column=0, sticky="W", padx=5, pady=2)
+        adaline_rb.grid(row=7, column=1, sticky="W", padx=5, pady=2)
 
-        train_button = ttk.Button(self.root, text="Train", command=lambda: self.on_click_train())
-        train_button.grid(row=14, column=0, padx=10, pady=10, sticky="W")
+        train_button = ttk.Button(self.root, text="Train", command=self.on_click_train)
+        train_button.grid(row=2, column=0, sticky="EW", padx=5, pady=5)
 
-        predict_button = ttk.Button(self.root, text="Predict", command=lambda: self.on_click_predict())
-        predict_button.grid(row=14, column=1, )
+        predict_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
+        predict_button.grid(row=2, column=1, sticky="EW", padx=5, pady=5)
 
         view_boundary_button = ttk.Button(self.root, text="View Decision Boundary", command=self.on_click_view_boundary)
-        view_boundary_button.grid(row=15, column=0, )
-        
-        visualize_btn = ttk.Button(self.root, text="Scatter Train Data", command=self.on_click_visualize)
-        visualize_btn.grid(row=16, column=0, )
+        view_boundary_button.grid(row=2, column=2, sticky="EW", padx=5, pady=5)
 
+        visualize_btn = ttk.Button(self.root, text="Scatter Train Data", command=self.on_click_visualize)
+        visualize_btn.grid(row=2, column=3, sticky="EW", padx=5, pady=5)
         self.root.mainloop()
 
     def on_click_choose_data(self):
@@ -112,10 +111,10 @@ class Task1UI(UI):
         print("Selected Features: ", self.selected_features)
 
     def show_features(self, features):
-        idx = 0
+        idx = 2
         for feature in features:
             chk = tk.Checkbutton(self.input_frame, text=feature, command=lambda f=feature: self.on_select_feature(f))
-            chk.grid(row=2, column=idx, sticky="W")
+            chk.grid(row=0, column=idx)
             idx += 1
 
     def on_click_processing(self):

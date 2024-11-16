@@ -11,12 +11,12 @@ import seaborn as sns
 class Visualizer:
     @staticmethod
     def plot_scatter(X , y):
-        class_0 = X.loc[y == -1]
-        class_1 = X.loc[y == 1]
+        class_1 = X.loc[y == -1]
+        class_2 = X.loc[y == 1]
 
         plt.Figure(figsize=(5, 4))
-        plt.scatter(class_0.iloc[:, 0], class_0.iloc[:, 1], color='blue', label='Class 0')
-        plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='red', label='Class 1')
+        plt.scatter(class_1.iloc[:, 0], class_1.iloc[:, 1], color='blue', label='Class #1')
+        plt.scatter(class_2.iloc[:, 0], class_2.iloc[:, 1], color='red', label='Class #2')
         # sns.scatterplot(x=X, y=y, hue=y, 
         #                 palette='viridis', style=y)
         plt.title(f'{X.columns[0]} vs {X.columns[1]}')

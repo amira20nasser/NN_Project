@@ -53,7 +53,7 @@ class Task1UI(UI):
         m_label.grid(row=3, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         self.epochs = tk.IntVar()
-        self.epochs.set(10)
+        self.epochs.set(20)
         m_entry = ttk.Entry(self.input_frame, textvariable=self.epochs)
         m_entry.grid(row=3, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
@@ -66,7 +66,7 @@ class Task1UI(UI):
         mse_entry.grid(row=4, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
         self.bias_var = tk.BooleanVar()
-        self.bias_var.set(False)
+        self.bias_var.set(True)
         bias_checkbox = ttk.Checkbutton(self.input_frame, text="Add Bias", variable=self.bias_var)
         bias_checkbox.grid(row=5, column=0, columnspan=4, sticky="W", padx=5, pady=2)
 

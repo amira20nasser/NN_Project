@@ -53,7 +53,7 @@ class Task1UI(UI):
         m_label.grid(row=3, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         self.epochs = tk.IntVar()
-        self.epochs.set(20)
+        self.epochs.set(100)
         m_entry = ttk.Entry(self.input_frame, textvariable=self.epochs)
         m_entry.grid(row=3, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
@@ -61,7 +61,7 @@ class Task1UI(UI):
         mse_label.grid(row=4, column=0, columnspan=2, sticky="W", padx=5, pady=2)
 
         self.mse_threshold = tk.DoubleVar()
-        self.mse_threshold.set(0.5)
+        self.mse_threshold.set(0.01)
         mse_entry = ttk.Entry(self.input_frame, textvariable=self.mse_threshold)
         mse_entry.grid(row=4, column=2, columnspan=2, sticky="EW", padx=5, pady=2)
 
@@ -140,7 +140,7 @@ class Task1UI(UI):
         else:
             weights = self.adaline.weights
             bias = self.adaline.bias
-            plt.title(f'mse_thresh-> {self.adaline.mse_threshold} eta:{self.adaline.learning_rate} {self.adaline.learning_rate}, epochs{self.adaline.epochs}')
+            plt.title(f'mse_thresh:{self.adaline.mse_threshold} eta:{self.adaline.learning_rate}, epochs{self.adaline.epochs}')
         weights=weights.reshape(2,1)
         
         # print(f"x min {X_test[:,0].min()}, x max {X_test[:,0].max()}")
@@ -195,14 +195,17 @@ class Task1UI(UI):
         y_pred = None
         y_pred_train = None
         weights = None
+        bias = None
         if self.algorithm_var.get() == "Perceptron":
            y_pred = self.perceptron.predict(X_test)
            y_pred_train = self.perceptron.predict(X_train)
            weights = self.perceptron.weights
+           bias = self.perceptron.bias
         else:
            y_pred = self.adaline.predict(X_test)
            y_pred_train = self.adaline.predict(X_train)
            weights = self.adaline.weights
+           bias = self.adaline.bias
 
         # print(f"view confusion shape y_act {y_test.shape} y_pred {y_pred.shape}")   
         cm = Evaluator.compute_confusion_matrix(y_actual=y_test,y_pred=y_pred.T)
@@ -212,7 +215,8 @@ class Task1UI(UI):
         plt.show()
         acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred.T)
         acc_train = Evaluator.overall_accuracy(y_actual=y_train,y_pred= y_pred_train.T)    
-        messagebox.showinfo("Evluation", f"Train Accuracy {acc_train} \nTest Accuracy {acc}\n with weights {weights}")    
+        print(f"Train Accuracy {acc_train} \nTest Accuracy {acc}\n with weights {weights} bias {bias}")
+        messagebox.showinfo("Evluation", f"Train Accuracy {acc_train} \nTest Accuracy {acc}\n with weights {weights} bias {bias}")    
 
 
 

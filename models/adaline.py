@@ -1,23 +1,13 @@
 import numpy as np
-from sklearn.metrics import mean_squared_error
 
-"""
-Adaline Implementation
- - Implement the Perceptron learning algorithm with the ability to classify data for any two selected classes and two selected features.
-- Check Lab3 Task description for steps Perceptron
-"""
-
-
-# Feel free to add new param or functions
-# this is only my insights that we need for algo  
 class Adaline:
     def __init__(self, learning_rate, epochs, mse_threshold, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
 
 
-        self.bias = 0 if bias == True else None
-        self.weights = np.zeros((1, 2))
+        self.bias = np.random.randn(1, 1) if bias == True else None
+        self.weights = 0.1* np.random.randn(1, 2)
         self.mse_threshold = mse_threshold
 
     def train(self, X, Y):
@@ -39,12 +29,12 @@ class Adaline:
                 self.weights = self.weights + self.learning_rate * error * X[j]
                 if self.bias is not None:
                     self.bias += self.learning_rate * error
-
-            mse = mean_squared_error(Y, y_pred)
-            # print(f"ADA current mse {mse}")
+            mse = np.mean((Y - y_pred) ** 2)
             if mse <= self.mse_threshold:
                 print("ADA Reach less than threshold")
-                break
+                break    
+
+          
     def predict(self, X):
         # Write Here YOUR CODE
         if self.bias is not None:

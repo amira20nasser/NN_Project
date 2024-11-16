@@ -5,7 +5,6 @@ from sklearn.metrics import accuracy_score
 
 class Evaluator:
     @staticmethod
-    @staticmethod
     def compute_confusion_matrix(y_actual, y_pred):
         TP = FP = TN = FN = 0
         for actual, pred in zip(y_actual, y_pred):

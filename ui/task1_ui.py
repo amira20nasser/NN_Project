@@ -94,7 +94,6 @@ class Task1UI(UI):
 
     def on_click_choose_data(self):
 
-        #file=filedialog.askopenfilename(initialdir = os.path.expanduser( os.getcwd()),title = "Select Dataset",filetypes = (("Text files","*.csv"), ("all files","*.*")))
         file="dataset/birds.csv"
         self.dataProcessor = DataProcessor(file)
 
@@ -121,7 +120,7 @@ class Task1UI(UI):
         if self.dataProcessor == None:
             messagebox.showwarning("NULL DATA", "Choose your dataset first")
             return
-        self.dataProcessor.process_data(self.class_var.get())
+        self.dataProcessor.process_data(self.class_var.get(),False)
 
     def on_click_visualize(self):
         Visualizer.plot_scatter(self.dataProcessor.X_train[self.selected_features],self.dataProcessor.y_train)

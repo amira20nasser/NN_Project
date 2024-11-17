@@ -85,7 +85,6 @@ class BackPropagation:
         self.initialize_params(X, Y)
         for i in range(self.layers):
             self.forward(X)
-        # plus backprop
         for i in range(self.layers):
             self.backward(X, y)
     

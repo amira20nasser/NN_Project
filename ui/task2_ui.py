@@ -115,3 +115,5 @@ class Task2UI(UI):
         self.backpropModel = BackPropagation(bias=True,epochs=1000,isSigmoid=True,layers=2,learning_rate=0.01,neurons=[4,3])
         # self.backpropModel.train()      
     
+    def predict(self,X):
+        print()

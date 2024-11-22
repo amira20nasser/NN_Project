@@ -30,6 +30,8 @@ class BackPropagation:
         self.weights = [0.01 * np.random.randn(self.hidden_size[0], self.input_size)]
         if self.isBias == True:
             self.bias = [0.01* np.random.randn(1, self.hidden_size[0])]
+        else:
+            self.bias=0
         i = 1
         for i in range(self.layers):
             self.weights.append( 0.01* np.random.randn(self.hidden_size[i],self.hidden_size[i-1]))  
@@ -77,7 +79,14 @@ def tanh_derivative(self, Z):
       bias 
       bias_output
       """
-      print()
+      print("Forward prop!")
+      output=np.matmul(X,self.weights[layer])+self.bias
+      if self.isSigmoid:
+        return sigmoid(output)
+      else:
+        return tanh(output)
+
+
     
     def backward(self, X, y):
         print()
@@ -87,7 +96,7 @@ def tanh_derivative(self, Z):
         self.get_sizes(X,Y)
         self.initialize_params(X, Y)
         for i in range(self.layers):
-            self.forward(X)
+            self.forward(X,i)
         for i in range(self.layers):
             self.backward(X, y)
     

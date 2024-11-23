@@ -48,17 +48,20 @@ class BackPropagation:
         # print( self.bias_output)
     
     # implement from Scratch
-    def sigmoid(self):
-        print()
+def sigmoid(self, Z):
+    return 1 / (1 + np.exp(-Z))
 
-    def tanh(self):
-       print()
+def tanh(self, Z):
+    return (np.exp(Z) - np.exp(-Z)) / (np.exp(Z) + np.exp(-Z))
 
-    def sigmoid_derivative(self):
-        print()       
-    
-    def tanh_derivative(self):
-        print()  
+def sigmoid_derivative(self, Z):
+    sigmoid_Z = self.sigmoid(Z)
+    return sigmoid_Z * (1 - sigmoid_Z)
+
+def tanh_derivative(self, Z):
+    tanh_Z = self.tanh(Z)
+    return 1 - tanh_Z**2
+
 
     def forward(self, X):
       """ 

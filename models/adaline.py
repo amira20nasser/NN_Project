@@ -41,11 +41,20 @@ class Adaline:
             self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
             if self.bias is not None:
                 self.bias += self.learning_rate * np.sum(error)
+
     def predict(self, X):
-        # Write Here YOUR CODE
+        # Normalize data with same transformation as training
+        X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
+        X = X.values.T  # Ensure this is in the correct shape for matrix operations
+
+        # Compute net input
         if self.bias is not None:
-            net = np.dot(self.weights, X.values.T) + self.bias
+            net_input = np.dot(self.weights, X) + self.bias
         else:
-            net = np.dot(self.weights, X.values.T)
-        return np.where(net >= 0, 1, -1)
+            net_input = np.dot(self.weights, X)
+
+        # Apply threshold function to classify outputs
+        predictions = np.where(net_input >= 0.5, 1, 0)
+
+        return predictions.flatten()
 

@@ -52,7 +52,7 @@ class Task1UI(UI):
         m_label.grid(row=7, column=0, sticky="W")
         self.epochs = tk.IntVar()
 
-        self.epochs.set(2)
+        self.epochs.set(1000)
         m_entry = ttk.Entry(self.input_frame,textvariable=self.epochs)
         m_entry.grid(row=8, column=0, sticky="W")
 
@@ -60,7 +60,7 @@ class Task1UI(UI):
         mse_label.grid(row=9, column=0, sticky="W")
         self.mse_threshold = tk.DoubleVar()
 
-        self.mse_threshold.set(0.5)
+        self.mse_threshold.set(0.01)
         mse_entry = ttk.Entry(self.input_frame,textvariable=self.mse_threshold)
         mse_entry.grid(row=10, column=0, sticky="W")
 
@@ -193,6 +193,7 @@ class Task1UI(UI):
         disp.plot(ax=ax)
         plt.show()
         acc = Evaluator.overall_accuracy(y_actual=y_test,y_pred=y_pred)
+        print(f"acc {acc}")
         messagebox.showinfo("Evluation", f"Accuracy {acc}")    
 
 

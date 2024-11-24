@@ -82,11 +82,11 @@ def forward(self, X):
     """
     print("Forward prop!")
     for i in range(len(self.layers)):
-    self.z[i]=np.matmul(X,self.weights[layer])+self.bias
-    if self.isSigmoid:
-        self.output[i]= sigmoid(z)
-    else:
-        self.output[i]= tanh(z)
+        self.z[i]=np.matmul(X,self.weights[layer])+self.bias
+        if self.isSigmoid:
+            self.output[i]= sigmoid(z)
+        else:
+            self.output[i]= tanh(z)
     return output
 
 

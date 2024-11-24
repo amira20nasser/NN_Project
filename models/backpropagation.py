@@ -8,7 +8,8 @@ class BackPropagation:
         self.isBias = isBias
         self.isSigmoid = isSigmoid
         self.neurons = neurons # list [3] or [4 3] layer 1 layer 2
-
+        self.z=[]
+        self.output=[]
     """
     Thinking 
     we have 
@@ -65,39 +66,39 @@ def tanh_derivative(self, Z):
     return 1 - tanh_Z**2
 
 
-    def forward(self, X):
-      """ 
-      NOTE:
-      make custom function that calculate forwad prob for one layer
-      note we will call that function multiple times until end of each layer 
-      Don't understand ask me 😊
+def forward(self, X):
+    """ 
+    NOTE:
+    make custom function that calculate forwad prob for one layer
+    note we will call that function multiple times until end of each layer 
+    Don't understand ask me 😊
 
-      Feel free to edit that part params ....
+    Feel free to edit that part params ....
 
-      weights is list of arrays  to access first array weights[0]
-      weights_output 
-      bias 
-      bias_output
-      """
-      print("Forward prop!")
-      output=np.matmul(X,self.weights[layer])+self.bias
-      if self.isSigmoid:
-        return sigmoid(output)
-      else:
-        return tanh(output)
+    weights is list of arrays  to access first array weights[0]
+    weights_output 
+    bias 
+    bias_output
+    """
+    print("Forward prop!")
+    for i in range(len(self.layers)):
+    self.z[i]=np.matmul(X,self.weights[layer])+self.bias
+    if self.isSigmoid:
+        self.output[i]= sigmoid(z)
+    else:
+        self.output[i]= tanh(z)
+    return output
 
 
-    
-    def backward(self, X, y):
-        print()
+def backward(self, X, y):
+    print()
 
-    # not completed
-    def train(self,X,Y):
-        self.get_sizes(X,Y)
-        self.initialize_params(X, Y)
-        for i in range(self.layers):
-            self.forward(X,i)
-        for i in range(self.layers):
-            self.backward(X, y)
-    
+# not completed
+def train(self,X,Y):
+    self.get_sizes(X,Y)
+    self.initialize_params(X, Y)
+    self.forward(X )
+    for i in range(self.layers):
+        self.backward(X, y)
+
 

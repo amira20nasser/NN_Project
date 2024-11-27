@@ -1,67 +1,75 @@
-"""
-TASK1: Data Preprocessing and *Splitting dataset*
-- Split each class into 30 training samples and 20 testing samples, ensuring that they are randomly selected and non-repeated.
-- Load and preprocess the dataset 
-"""
 import pandas as pd
 import sklearn as sk
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+
 class DataProcessor:
     def __init__(self, file_path):
         self.file_path = file_path
         pddata = pd.read_csv(file_path)
         self.data = pddata
         self.X_train,self.X_test,self.y_train,self.y_test = None,None,None,None
-        
-    def process_data(self,selected_classes):
-        #self.file_path = 'dataset/birds.csv'
-        data = pd.read_csv(self.file_path)
-        # y=pd.DataFrame(data.pop('bird category'))
-        filtered_data = None
+
+    def select_classes(self,selected_classes):
         if selected_classes == "A,B":
-            data = data[data['bird category'].isin(['A','B'])]
-            data['bird category'] = data['bird category'].replace(['A'], 1)
-            data['bird category'] = data['bird category'].replace(['B'], -1)
-            # data['bird category'] = [1 if x == "A" else 0 for x in data['bird category'] ]
+            self.data = self.data[self.data['bird category'].isin(['A','B'])]
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: 1 if x == 'A' else x)
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: -1 if x == 'B' else x)
         if selected_classes == "A,C":
-            data = data[data['bird category'].isin(['A','C'])]
-            data['bird category'] = data['bird category'].replace('A', 1)
-            data['bird category'] = data['bird category'].replace('C', -1)
-            # data['bird category'] = [1 if x == "A" else 0 for x in data['bird category'] ]
+            self.data = self.data[self.data['bird category'].isin(['A','C'])]
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: 1 if x == 'A' else x)
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: -1 if x == 'C' else x)
         if selected_classes == "B,C":
-            data = data[data['bird category'].isin(['B','C'])]
-            data['bird category'] = data['bird category'].replace('B', 1)
-            data['bird category'] = data['bird category'].replace('C', -1)
-            # data['bird category'] = [1 if x == "B" else 0 for x in data['bird category'] ]
+            self.data = self.data[self.data['bird category'].isin(['B','C'])]
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: 1 if x == 'B' else x)
+            self.data['bird category'] = self.data['bird category'].apply(lambda x: -1 if x == 'C' else x)
+    
 
-        X = data.drop('bird category',axis=1)
-        y = data['bird category'].values  
-        # X=data
+    def process_data(self,selected_classes,isBackProb):
+        y = None
+        if isBackProb is None or isBackProb == False:
+            self.select_classes(selected_classes)
+        else:
+            encoder = OneHotEncoder(sparse_output=False)
+            encoded_target = encoder.fit_transform(self.data['bird category'].values.reshape(-1, 1))
+            # print(encoded_target)
+            # print(encoder.categories_[0])
+            encoded_target_df = pd.DataFrame(
+                encoded_target,
+                columns=[f"Class_{c}" for c  in encoder.categories_[0]]
+            )
+            # print(encoded_target_df)
+            final_data = pd.concat([self.data.iloc[:, :-1], encoded_target_df], axis=1)
+            # print(final_data)
+            y = pd.concat([final_data["Class_A"], final_data["Class_B"],final_data["Class_C"]], axis=1)
+            # print(y)
+
+        X = self.data.drop('bird category',axis=1)
+        if y is None:
+            y = self.data['bird category'].values  
+
+        # print("Before Encoding Our Data")
+        # print(X)
+        # print(y)
         numeric_cols=['body_mass', 'beak_length', 'beak_depth', 'fin_length']
-        # print("data\n", data.head())
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.4,random_state=34)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.4,random_state=34,stratify=y)
 
-        print("train Shape: ", self.X_train.shape)
-
-        #Preprocessing training data                              random_state=34)
+        print("Process Data->Original X train Shape: ", self.X_train.shape)
+        print("Process Data->Original Y train Shape: ", self.y_train.shape)
         gender_mode=self.X_train['gender'].mode()[0]
         self.X_train['gender']=self.X_train['gender'].fillna(gender_mode)
         self.X_train['gender']=[0 if x.lower() == "female" else 1 for x in self.X_train['gender']]
 
         scaler= MinMaxScaler()
         self.X_train[numeric_cols]=scaler.fit_transform(self.X_train[numeric_cols])
-        # print("preprocessed train\n", self.X_train)
-
-        print("test Shape: ", self.X_test.shape)
-
+        print("Process Data->Original test Shape: ", self.X_test.shape)
         self.X_test['gender']=self.X_test['gender'].fillna(gender_mode)
         self.X_test['gender']=[0 if x.lower() == "female" else 1 for x in self.X_test['gender']]
-
         self.X_test[numeric_cols]=scaler.transform(self.X_test[numeric_cols])
-        # print("test\n", self.X_test)
-
-        #Preprocessing test data
-        # return X_train, X_test, y_train, y_test
-        
-   
+        # print("After Encoding Our Data")
+        # print(self.X_train)
+        # print(self.y_train)
+        # print( (self.y_train[['Class_A','Class_B','Class_C']] == [1, 0, 0]).all(axis=1).sum())
+        # print( (self.y_train[['Class_A','Class_B','Class_C']] == [0, 1, 0]).all(axis=1).sum())
+        # print( (self.y_train[['Class_A','Class_B','Class_C']] == [0, 0, 1]).all(axis=1).sum())

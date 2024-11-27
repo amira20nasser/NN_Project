@@ -12,32 +12,30 @@ class Perceptron:
     def __init__(self, learning_rate, epochs, bias=True):
         self.learning_rate = learning_rate
         self.epochs = epochs
-
-        self.bias = np.random.randn() if bias==True  else  None
-        self.weights = np.random.randn(1,2)
-    
+        self.bias = 0.1*np.random.randn(1, 1) if bias == True else None
+        self.weights = 0.1* np.random.randn(1, 2)
     
     def train(self,X,Y):
-        X = X.values.T
-        Y = Y.reshape(1,-1)
+        X = X.values
+        Y=Y.flatten()
+        y_pred=np.empty(len(Y))
+
         print("In Training Perceptron: ",X.shape,Y.shape)
         #  (1,2) . (2 features , training samples ) = (1, training samples)
-        for _ in range(self.epochs):
-            net = 0
-            if self.bias is not None:
-                print("Bias")
-                print(self.bias)
-                net = np.dot(self.weights,X) + self.bias
-            else:
-                net = np.dot(self.weights,X) 
-            y_pred = self.sgn_activation_function(net)
-            error = Y - y_pred
-            # if np.all(error == 0):
-            #     continue
-            #                  (1,training samples).(traniing samples,2features)  
-            self.weights = self.weights + self.learning_rate * np.dot(error, X.T)
-            if self.bias is not None:
-                self.bias += self.learning_rate * np.sum(error)
+        for i in range(self.epochs):
+            for j in range(len(X)):
+                if self.bias is not None:
+                      net = np.dot(self.weights, X[j].T) + self.bias
+                else:
+                    net = np.dot(self.weights, X[j].T)
+                y_pred[j] = self.sgn_activation_function(net)
+                error = Y[j] - y_pred[j]
+                # if np.all(error == 0):
+                #     continue
+                #                  (1,training samples).(traniing samples,2features)  
+                self.weights = self.weights + self.learning_rate * error * X[j]
+                if self.bias is not None:
+                    self.bias += self.learning_rate * error
 
     def sgn_activation_function(self,net):
         return np.where(net >= 0, 1, -1)

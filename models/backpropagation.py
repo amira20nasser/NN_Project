@@ -34,17 +34,17 @@ class BackPropagation:
     def initialize_params(self, X, Y):
         self.weights = [0.01 * np.random.randn(self.hidden_size[0], self.input_size)]
         if self.isBias == True:
-            self.bias = [0.01 * np.random.randn(1, self.hidden_size[0])]
+            self.bias = [0.01 * np.random.randn(self.hidden_size[0])]
         else:
             self.bias = None
 
         for i in range(1, self.layers):
             self.weights.append(0.01 * np.random.randn(self.hidden_size[i], self.hidden_size[i - 1]))
             if self.isBias == True:
-                self.bias.append(0.01 * np.random.randn(1, self.hidden_size[i]))
+                self.bias.append(0.01 * np.random.randn(self.hidden_size[i]))
 
-        self.weights_output = 0.01 * np.random.randn(self.output_size, self.hidden_size[self.layers - 1])  # [[-1]
-        self.bias_output = 0.01 * np.random.randn(1, self.output_size)
+        self.weights.append(0.01 * np.random.randn(self.output_size, self.hidden_size[self.layers - 1]))  # [[-1]
+        self.bias.append(0.01 * np.random.randn(self.output_size))
         # print("hidden weights list len", len(self.weights) )
         # print( self.weights)
         # print("all hidden BIAS shape",len(self.bias))
@@ -73,26 +73,19 @@ class BackPropagation:
         print("Forward prop!")
         input_data = X
         # (3,5)  , (90,5)
-        self.z_values.append(np.dot(self.weights[0], input_data.values.T) + (self.bias[0].T if self.isBias else 0))
+        self.z_values.append(np.dot(self.weights[0], input_data.values) + (self.bias[0] if self.isBias else 0))
         self.output_forward.append(self.sigmoid(self.z_values[0]) if self.isSigmoid else self.tanh(self.z_values[0]))
         input_data = self.output_forward[0]
-
-        for i in range(1, self.layers):
-            self.z_values.append(np.dot(self.weights[i], input_data) + (self.bias[i].T if self.isBias else 0))
+        print(self.z_values[0].shape)
+        for i in range(1, self.layers+1):
+            self.z_values.append(np.dot(self.weights[i], input_data.T) + (self.bias[i] if self.isBias else 0))
             if self.isSigmoid:
                 self.output_forward.append(self.sigmoid(self.z_values[i]))
             else:
                 self.output_forward.append(self.tanh(self.z_values[i]))
 
             input_data = self.output_forward[i]
-
-        z_output = np.dot(self.weights_output, input_data) + (self.bias_output.T if self.isBias else 0)
-        self.z_values.append(z_output)
-        if self.isSigmoid:
-            self.output_forward.append(self.sigmoid(z_output))
-        else:
-            self.output_forward.append(self.tanh(z_output))
-
+        
         for i in range(3):
             print("layer", i + 1)
             print("Z values layer  shape", self.z_values[i].shape)
@@ -118,8 +111,8 @@ class BackPropagation:
     def train(self, X, Y):
         self.get_sizes(X, Y)
         self.initialize_params(X, Y)
-        self.forward(X)
-        self.backward(X, Y)
+        self.forward(X.iloc[0,:])
+        #self.backward(X, Y)
         # for i in range(self.layers):
         #     self.backward(X, y)
 

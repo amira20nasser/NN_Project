@@ -112,8 +112,8 @@ class Task2UI(UI):
         self.dataProcessor.process_data(None,True)
 
     def on_click_train(self):
-        self.backpropModel = BackPropagation(bias=True,epochs=1000,isSigmoid=True,layers=2,learning_rate=0.01,neurons=[4,3])
-        # self.backpropModel.train()      
+        self.backpropModel = BackPropagation(isBias=True,epochs=1000,isSigmoid=True,layers=2,learning_rate=0.01,neurons=[3,4])
+        self.backpropModel.train( self.dataProcessor.X_train,self.dataProcessor.y_train)      
     
     def predict(self,X):
         print()

@@ -111,4 +111,6 @@ class BackPropagation:
         # for i in range(self.layers):
         #     self.backward(X, y)
 
+    def predict():
+        print()
 

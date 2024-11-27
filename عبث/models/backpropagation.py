@@ -57,12 +57,21 @@ class BackPropagation:
         for i in range(len(self.weights)):
             z = np.dot(self.output[-1], self.weights[i].T) + (self.bias[i] if self.isBias else 0)
             self.z.append(z)
-            self.output.append(self.sigmoid(z) if self.isSigmoid else self.tanh(z))
+            # Apply the correct activation function based on user choice
+            if self.isSigmoid:
+                self.output.append(self.sigmoid(z))
+            else:
+                self.output.append(self.tanh(z))
 
         # طبقة الإخراج
         z_out = np.dot(self.output[-1], self.weights_output.T) + (self.bias_output if self.isBias else 0)
         self.z.append(z_out)
-        final_output = self.sigmoid(z_out) if self.isSigmoid else self.tanh(z_out)
+        # Apply the correct activation function for the output layer
+        if self.isSigmoid:
+            final_output = self.sigmoid(z_out)
+        else:
+            final_output = self.tanh(z_out)
+
         self.output.append(final_output)
 
         return final_output
@@ -76,14 +85,16 @@ class BackPropagation:
         dz = self.output[-1] - Y
         gradients["dw_output"] = (1 / m) * np.dot(dz.T, self.output[-2])
 
-        # حول الـ dz لـ NumPy array قبل ما تستخدم sum
-        dz_array = dz.to_numpy()  # دي هتحول الـ DataFrame لـ NumPy array
+        dz_array = dz.to_numpy()  # تحويل البيانات لـ NumPy array
         gradients["db_output"] = (1 / m) * np.sum(dz_array, axis=0, keepdims=True) if self.isBias else 0
 
         # العودة عبر الطبقات المخفية
         for i in reversed(range(len(self.weights))):
             da = np.dot(dz, self.weights_output if i == len(self.weights) - 1 else self.weights[i + 1])
-            dz = da * (self.sigmoid_derivative(self.z[i]) if self.isSigmoid else self.tanh_derivative(self.z[i]))
+            if self.isSigmoid:
+                dz = da * self.sigmoid_derivative(self.z[i])
+            else:
+                dz = da * self.tanh_derivative(self.z[i])
             gradients[f"dw_{i}"] = (1 / m) * np.dot(dz.T, self.output[i])
             gradients[f"db_{i}"] = (1 / m) * np.sum(dz, axis=0, keepdims=True) if self.isBias else 0
 

@@ -73,3 +73,7 @@ class DataProcessor:
         # print( (self.y_train[['Class_A','Class_B','Class_C']] == [1, 0, 0]).all(axis=1).sum())
         # print( (self.y_train[['Class_A','Class_B','Class_C']] == [0, 1, 0]).all(axis=1).sum())
         # print( (self.y_train[['Class_A','Class_B','Class_C']] == [0, 0, 1]).all(axis=1).sum())
+    
+    def get_processed_data(self):
+        return self.X_train, self.y_train, self.X_test, self.y_test
+

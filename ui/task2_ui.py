@@ -112,8 +112,30 @@ class Task2UI(UI):
         self.dataProcessor.process_data(None,True)
 
     def on_click_train(self):
-        self.backpropModel = BackPropagation(isBias=True,epochs=1000,isSigmoid=True,layers=2,learning_rate=0.01,neurons=[3,4])
-        self.backpropModel.train( self.dataProcessor.X_train,self.dataProcessor.y_train)      
-    
+        if not self.dataProcessor:
+            messagebox.showwarning("Data Missing", "Please select and process your dataset first.")
+            return
+
+        neurons_list = list(map(int, self.neurons.get().split()))
+        is_sigmoid = self.algorithm_var.get() == "Sigmoid"
+
+        self.backpropModel = BackPropagation(
+            isBias=self.bias_var.get(),
+            epochs=self.epochs.get(),
+            isSigmoid=is_sigmoid,
+            layers=self.layers.get(),
+            learning_rate=self.learning_rate.get(),
+            neurons=neurons_list
+        )
+
+        X_train, y_train, X_test, y_test = self.dataProcessor.get_processed_data()
+        if X_train is None or y_train is None:
+            messagebox.showwarning("Data Issue", "Processed data is missing or invalid.")
+            return
+
+        # self.backpropModel = BackPropagation(isBias=True,epochs=1000,isSigmoid=True,layers=2,learning_rate=0.01,neurons=[3,4])
+        self.backpropModel.train(X_train,y_train)     
+        messagebox.showinfo("Training Complete", "Model training is complete!")
+ 
     def predict(self,X):
         print()

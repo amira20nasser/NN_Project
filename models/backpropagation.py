@@ -70,7 +70,7 @@ class BackPropagation:
         return 1 - tanh_Z ** 2
 
     def forward(self, X):
-        print("Forward prop!")
+        # print("Forward prop!")
         self.z_values = []
         self.output_forward = []
         input_data = X
@@ -78,7 +78,7 @@ class BackPropagation:
         self.z_values.append(np.dot(self.weights[0], input_data.values) + (self.bias[0] if self.isBias else 0))
         self.output_forward.append(self.sigmoid(self.z_values[0]) if self.isSigmoid else self.tanh(self.z_values[0]))
         input_data = self.output_forward[0]
-        print(self.z_values[0].shape)
+        # print(self.z_values[0].shape)
         for i in range(1, self.layers+1):
             self.z_values.append(np.dot(self.weights[i], input_data.T) + (self.bias[i] if self.isBias else 0))
             if self.isSigmoid:
@@ -88,10 +88,10 @@ class BackPropagation:
 
             input_data = self.output_forward[i]
         
-        for i in range(3):
-            print("layer", i + 1)
-            print("Z values layer  shape", self.z_values[i].shape)
-            print("output_forward shape", self.output_forward[i].shape)
+        # for i in range(3):
+        #     print("layer", i + 1)
+        #     print("Z values layer  shape", self.z_values[i].shape)
+        #     print("output_forward shape", self.output_forward[i].shape)
 
 
     def backward(self, x, y):
@@ -101,7 +101,7 @@ class BackPropagation:
 
         # deltas[-1] = deltas[-1].T
         for i in reversed(range(self.layers)):
-            print(i)
+            # print(i)
             sum_weights = np.dot(self.weights[i+1].T,deltas[i+1])
             deltas[i] =  sum_weights*(self.sigmoid_derivative(self.z_values[i]) if self.isSigmoid else self.tanh_derivative(self.z_values[i]))
 
@@ -109,11 +109,11 @@ class BackPropagation:
             # print(self.output_forward[i].reshape(-1, 1))
             self.weights[i+1] += self.learning_rate * np.dot(deltas[i+1].reshape(-1, 1), self.output_forward[i].reshape(1, -1))
             self.bias[i+1] += self.learning_rate * np.sum(deltas[i+1])
-        print(deltas)
-        for i in range(len(self.weights)):
-            print(self.weights[i].shape)
-            print(self.bias[i].shape)
-            print("======")
+        # print(deltas)
+        # for i in range(len(self.weights)):
+        #     print(self.weights[i].shape)
+        #     print(self.bias[i].shape)
+        #     print("======")
 
     def train(self, X, Y):
         self.get_sizes(X, Y)
@@ -130,9 +130,12 @@ class BackPropagation:
     # not sure
     def predict(self,X):
         predictions = []
+        m = X.shape[0]
         for i in range(m):
            self.forward(X.iloc[i,:])
-           predictions.append(self.output_forward)
+           max_value = max(self.output_forward[-1])
+           predictions.append([1 if value == max_value else 0 for value in self.output_forward[-1]])
+        print(predictions[0])
         return predictions
         
 

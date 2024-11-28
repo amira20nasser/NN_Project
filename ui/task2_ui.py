@@ -81,8 +81,8 @@ class Task2UI(UI):
         train_button = ttk.Button(self.root, text="Train", command=self.on_click_train)
         train_button.grid(row=2, column=0, sticky="EW", padx=5, pady=5)
 
-        # predict_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
-        # predict_button.grid(row=2, column=1, sticky="EW", padx=5, pady=5)
+        predict_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
+        predict_button.grid(row=2, column=1, sticky="EW", padx=5, pady=5)
 
         # view_boundary_button = ttk.Button(self.root, text="View Decision Boundary", command=self.on_click_view_boundary)
         # view_boundary_button.grid(row=2, column=2, sticky="EW", padx=5, pady=5)
@@ -137,5 +137,6 @@ class Task2UI(UI):
         self.backpropModel.train(X_train,y_train)     
         messagebox.showinfo("Training Complete", "Model training is complete!")
  
-    def predict(self,X):
-        print()
+    def on_click_predict(self):
+        X_train, y_train, X_test, y_test = self.dataProcessor.get_processed_data()
+        self.backpropModel.predict(X_train)  

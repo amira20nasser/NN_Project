@@ -71,6 +71,8 @@ class BackPropagation:
 
     def forward(self, X):
         print("Forward prop!")
+        self.z_values = []
+        self.output_forward = []
         input_data = X
         # (3,5)  , (90,5)
         self.z_values.append(np.dot(self.weights[0], input_data.values) + (self.bias[0] if self.isBias else 0))
@@ -95,24 +97,32 @@ class BackPropagation:
     def backward(self, x, y):
         output = self.output_forward[-1]
         deltas = [0] * (self.layers + 1)
-        deltas[-1] = (y.T - output) * output * (1 - output)
+        deltas[-1] = (y.values - output) * (self.sigmoid_derivative(self.z_values[-1]) if self.isSigmoid else self.tanh_derivative(self.z_values[-1]))
 
-        for i in reversed(range(self.layers + 1)):
-            if i == self.layers:
-                delta_sum = np.dot(deltas[-1], self.weights_output.T)
-            else:
-                delta_sum = np.dot(deltas[i + 1], self.weights[i].T)
-            deltas[i] = self.output_forward[i] * (1 - self.output_forward[i]) * delta_sum
-            if i == self.layers - 1:
-                self.weights_output -= x[i] * deltas[-1]
-            else:
-                self.weights[i] -= x[i] * deltas[i]
+        # deltas[-1] = deltas[-1].T
+        for i in reversed(range(self.layers)):
+            print(i)
+            sum_weights = np.dot(self.weights[i+1].T,deltas[i+1])
+            deltas[i] =  sum_weights*(self.sigmoid_derivative(self.z_values[i]) if self.isSigmoid else self.tanh_derivative(self.z_values[i]))
+
+            # print(self.output_forward[i].reshape(1, -1))
+            # print(self.output_forward[i].reshape(-1, 1))
+            self.weights[i+1] += self.learning_rate * np.dot(deltas[i+1].reshape(-1, 1), self.output_forward[i].reshape(1, -1))
+            self.bias[i+1] += self.learning_rate * np.sum(deltas[i+1])
+        print(deltas)
+        for i in range(len(self.weights)):
+            print(self.weights[i].shape)
+            print(self.bias[i].shape)
+            print("======")
 
     def train(self, X, Y):
         self.get_sizes(X, Y)
         self.initialize_params(X, Y)
-        self.forward(X.iloc[0,:])
-        #self.backward(X, Y)
+        m = X.shape[0]
+        
+        for i in range(m):
+            self.forward(X.iloc[i,:])
+            self.backward(X.iloc[i,:], Y.iloc[i,:])
         # for i in range(self.layers):
         #     self.backward(X, y)
 

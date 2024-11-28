@@ -139,4 +139,23 @@ class Task2UI(UI):
  
     def on_click_predict(self):
         X_train, y_train, X_test, y_test = self.dataProcessor.get_processed_data()
-        self.backpropModel.predict(X_train)  
+        predictions = self.backpropModel.predict(X_train) 
+        # print(len(predictions))
+        # print(len(y_train))
+        # print(y_train.values[1])
+        # print(predictions[1])
+
+        correct_pred = sum([np.array_equal(y_train.values[i], predictions[i]) for i in range(y_train.shape[0])])
+        print(correct_pred)
+        total = y_train.shape[0]
+        accuracy = (correct_pred / total) * 100
+        print(f"Train Accuracy: {accuracy}%")
+
+        #TEST
+        predictions = self.backpropModel.predict(X_test) 
+        correct_pred = sum([np.array_equal(y_test.values[i], predictions[i]) for i in range(y_test.shape[0])])
+        print(correct_pred)
+        total = y_test.shape[0]
+        accuracy = (correct_pred / total) * 100
+        print(f"Test Accuracy: {accuracy}%")
+        

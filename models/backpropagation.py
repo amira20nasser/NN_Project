@@ -44,7 +44,8 @@ class BackPropagation:
                 self.bias.append(0.01 * np.random.randn(self.hidden_size[i],1))
 
         self.weights.append(0.01 * np.random.randn(self.output_size, self.hidden_size[self.layers - 1]))  # [[-1]
-        self.bias.append(0.01 * np.random.randn(self.output_size,1))
+        if self.isBias == True:
+            self.bias.append(0.01 * np.random.randn(self.output_size,1))
         # print("hidden weights list len", len(self.weights) )
         # print( self.weights)
         # print("all hidden BIAS shape",len(self.bias))
@@ -115,7 +116,8 @@ class BackPropagation:
         # print(y.values.reshape(-1,1).shape)
         deltas[-1] = (y.values.reshape(-1,1) - output) * f_dash
         self.weights[-1] += self.learning_rate * np.dot(deltas[-1], self.output_forward[-2].T)
-        self.bias[-1] += self.learning_rate * np.sum(deltas[-1],axis=1, keepdims=True)
+        if self.isBias == True:
+            self.bias[-1] += self.learning_rate * np.sum(deltas[-1],axis=1, keepdims=True)
 
         for i in reversed(range(self.layers)):
             # print(i)                 # (3,4) . (3,1)
@@ -128,7 +130,8 @@ class BackPropagation:
             # print(self.output_forward[i].reshape(-1, 1))
             
             # print("shape",deltas[i].shape,self.output_forward[i-1].T.shape)
-            self.bias[i] += self.learning_rate * np.sum(deltas[i],axis=1, keepdims=True)
+            if self.isBias == True:
+                self.bias[i] += self.learning_rate * np.sum(deltas[i],axis=1, keepdims=True)
             if i==0:
                 input_data =x.values
                 if input_data.ndim == 1:
@@ -153,15 +156,16 @@ class BackPropagation:
         m = X.shape[0]
         # self.forward(X.iloc[0,:])
         # self.backward(X.iloc[0,:], Y.iloc[0,:])
-        print("Weights Before")
-        print(self.weights[0])
+        # print("Weights Before")
+        # print(self.weights[0])
 
         for e in range(self.epochs):
             for i in range(m):
                 self.forward(X.iloc[i,:])
                 self.backward(X.iloc[i,:], Y.iloc[i,:])
-        print("Weights After")
-        print(self.weights[0])
+        # print("Weights After")
+        # print(self.weights[0])
+
     # not sure
     def predict(self,X):
         predictions = []

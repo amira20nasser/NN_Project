@@ -119,14 +119,20 @@ class BackPropagation:
         self.get_sizes(X, Y)
         self.initialize_params(X, Y)
         m = X.shape[0]
-        
-        for i in range(m):
-            self.forward(X.iloc[i,:])
-            self.backward(X.iloc[i,:], Y.iloc[i,:])
+        for e in range(self.epochs):
+            for i in range(m):
+                self.forward(X.iloc[i,:])
+                self.backward(X.iloc[i,:], Y.iloc[i,:])
         # for i in range(self.layers):
         #     self.backward(X, y)
 
 
-    def predict():
-        print()
+    # not sure
+    def predict(self,X):
+        predictions = []
+        for i in range(m):
+           self.forward(X.iloc[i,:])
+           predictions.append(self.output_forward)
+        return predictions
+        
 

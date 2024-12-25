@@ -39,13 +39,13 @@ class BackPropagation:
             self.bias = None
 
         for i in range(1, self.layers):
-            self.weights.append(0.01 * np.random.randn(self.hidden_size[i], self.hidden_size[i - 1]))
+            self.weights.append(0.6 * np.random.randn(self.hidden_size[i], self.hidden_size[i - 1]))
             if self.isBias == True:
-                self.bias.append(0.01 * np.random.randn(self.hidden_size[i],1))
+                self.bias.append(0.6 * np.random.randn(self.hidden_size[i],1))
 
-        self.weights.append(0.01 * np.random.randn(self.output_size, self.hidden_size[self.layers - 1]))  # [[-1]
+        self.weights.append(0.6 * np.random.randn(self.output_size, self.hidden_size[self.layers - 1]))  # [[-1]
         if self.isBias == True:
-            self.bias.append(0.01 * np.random.randn(self.output_size,1))
+            self.bias.append(0.6 * np.random.randn(self.output_size,1))
         # print("hidden weights list len", len(self.weights) )
         # print( self.weights)
         # print("all hidden BIAS shape",len(self.bias))

@@ -81,8 +81,8 @@ class Task2UI(UI):
         train_button = ttk.Button(self.root, text="Train", command=self.on_click_train)
         train_button.grid(row=2, column=0, sticky="EW", padx=5, pady=5)
 
-        # predict_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
-        # predict_button.grid(row=2, column=1, sticky="EW", padx=5, pady=5)
+        predict_button = ttk.Button(self.root, text="Predict", command=self.on_click_predict)
+        predict_button.grid(row=2, column=1, sticky="EW", padx=5, pady=5)
 
         # view_boundary_button = ttk.Button(self.root, text="View Decision Boundary", command=self.on_click_view_boundary)
         # view_boundary_button.grid(row=2, column=2, sticky="EW", padx=5, pady=5)
@@ -137,5 +137,25 @@ class Task2UI(UI):
         self.backpropModel.train(X_train,y_train)     
         messagebox.showinfo("Training Complete", "Model training is complete!")
  
-    def predict(self,X):
-        print()
+    def on_click_predict(self):
+        X_train, y_train, X_test, y_test = self.dataProcessor.get_processed_data()
+        predictions = self.backpropModel.predict(X_train) 
+        # print(len(predictions))
+        # print(len(y_train))
+        # print(y_train.values[1])
+        # print(predictions[1])
+
+        correct_pred = sum([np.array_equal(y_train.values[i], predictions[i]) for i in range(y_train.shape[0])])
+        print("#Train correct",correct_pred)
+        total = y_train.shape[0]
+        accuracy = (correct_pred / total) * 100
+        print(f"Train Accuracy: {accuracy}%")
+
+        #TEST
+        predictions = self.backpropModel.predict(X_test) 
+        correct_pred = sum([np.array_equal(y_test.values[i], predictions[i]) for i in range(y_test.shape[0])])
+        print("#Test correct ",correct_pred)
+        total = y_test.shape[0]
+        accuracy = (correct_pred / total) * 100
+        print(f"Test Accuracy: {accuracy}%")
+        

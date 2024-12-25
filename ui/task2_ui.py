@@ -146,7 +146,7 @@ class Task2UI(UI):
         # print(predictions[1])
 
         correct_pred = sum([np.array_equal(y_train.values[i], predictions[i]) for i in range(y_train.shape[0])])
-        print("#Train correct",correct_pred)
+        # print("#Train correct",correct_pred)
         total = y_train.shape[0]
         accuracy = (correct_pred / total) * 100
         print(f"Train Accuracy: {accuracy}%")
@@ -154,7 +154,7 @@ class Task2UI(UI):
         #TEST
         predictions = self.backpropModel.predict(X_test) 
         correct_pred = sum([np.array_equal(y_test.values[i], predictions[i]) for i in range(y_test.shape[0])])
-        print("#Test correct ",correct_pred)
+        # print("#Test correct ",correct_pred)
         total = y_test.shape[0]
         accuracy = (correct_pred / total) * 100
         print(f"Test Accuracy: {accuracy}%")

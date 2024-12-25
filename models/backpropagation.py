@@ -32,9 +32,9 @@ class BackPropagation:
         self.hidden_size = self.neurons
 
     def initialize_params(self, X, Y):
-        self.weights = [0.01 * np.random.randn(self.hidden_size[0], self.input_size)]
+        self.weights = [0.6 * np.random.randn(self.hidden_size[0], self.input_size)]
         if self.isBias == True:
-            self.bias = [0.01 * np.random.randn(self.hidden_size[0],1)]
+            self.bias = [0.6 * np.random.randn(self.hidden_size[0],1)]
         else:
             self.bias = None
 

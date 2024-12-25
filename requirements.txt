@@ -1,0 +1,11 @@
+numpy
+pandas
+dask
+dask-ml
+matplotlib
+scikit-learn
+tensorflow
+tf-keras
+transformers
+nltk
+emoji

@@ -23,20 +23,20 @@ class Perceptron:
         print("In Training Perceptron: ",X.shape,Y.shape)
         #  (1,2) . (2 features , training samples ) = (1, training samples)
         for i in range(self.epochs):
+            error = np.empty(len(Y))
             for j in range(len(X)):
                 if self.bias is not None:
-                      net = np.dot(self.weights, X[j].T) + self.bias
+                    net = np.dot(self.weights, X[j].T) + self.bias
                 else:
                     net = np.dot(self.weights, X[j].T)
                 y_pred[j] = self.sgn_activation_function(net)
-                error = Y[j] - y_pred[j]
-                # if np.all(error == 0):
-                #     continue
-                #                  (1,training samples).(traniing samples,2features)  
+                error[i] = Y[j] - y_pred[j]
                 self.weights = self.weights + self.learning_rate * error * X[j]
                 if self.bias is not None:
                     self.bias += self.learning_rate * error
-
+            if np.all(error == 0):
+                break
+            
     def sgn_activation_function(self,net):
         return np.where(net >= 0, 1, -1)
 

@@ -10,7 +10,7 @@ class BackPropagation:
         self.isSigmoid = isSigmoid
         self.neurons = neurons  # list [3] or [4 3] layer 1 layer 2
         self.output_forward = []
-        self.weights = []  # amira bthbd wla eh
+        self.weights = []
         self.bias = []
         self.z_values = []
 
@@ -112,25 +112,15 @@ class BackPropagation:
         deltas = [0] * (self.layers + 1)
         f_dash = (
             self.sigmoid_derivative(self.z_values[-1]) if self.isSigmoid else self.tanh_derivative(self.z_values[-1]))
-        # print(f_dash.shape)
-        # print(y.values.reshape(-1,1).shape)
         deltas[-1] = (y.values.reshape(-1, 1) - output) * f_dash
         self.weights[-1] += self.learning_rate * np.dot(deltas[-1], self.output_forward[-2].T)
         if self.isBias == True:
             self.bias[-1] += self.learning_rate * np.sum(deltas[-1], axis=1, keepdims=True)
 
         for i in reversed(range(self.layers)):
-            # print(i)                 # (3,4) . (3,1)
-            # print("weights shape",self.weights[i+1].shape)
             sum_weights = np.dot(self.weights[i + 1].T, deltas[i + 1])
-            # print("sum weights shape",sum_weights.shape)
             deltas[i] = sum_weights * (
                 self.sigmoid_derivative(self.z_values[i]) if self.isSigmoid else self.tanh_derivative(self.z_values[i]))
-
-            # print(self.output_forward[i].reshape(1, -1))
-            # print(self.output`_forward[i].reshape(-1, 1))
-
-            # print("shape",deltas[i].shape,self.output_forward[i-1].T.shape)
             if self.isBias == True:
                 self.bias[i] += self.learning_rate * np.sum(deltas[i], axis=1, keepdims=True)
             if i == 0:
@@ -143,12 +133,6 @@ class BackPropagation:
                 continue
             self.weights[i] += self.learning_rate * np.dot(deltas[i], self.output_forward[i - 1].T)
 
-        # # print(deltas)
-        # print("=======")
-        # for i in range(len(self.weights)):
-        #     print(self.weights[i].shape)
-        #     print(self.bias[i].shape)
-        #     print("======")
 
     def train(self, X, Y):
         self.get_sizes(X, Y)

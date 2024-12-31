@@ -1,6 +1,6 @@
 # Neural Network '25
 
-This repo houses our tasks and project for Neural Networks '25 course and FCIS, Ain Shams University. The code is available as well as the reports documenting our results.
+This repo houses our tasks and project for Neural Networks '25 course at FCIS, Ain Shams University. The code is available as well as the reports documenting our results.
 
 ## Task 1: Perceptron and Adaline
 - Implementing two neural network models: Perceptron and Adaline.
